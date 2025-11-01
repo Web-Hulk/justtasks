@@ -1,7 +1,8 @@
+import { Registration } from '../Registration/Registration';
 import './App.css';
 
 function App() {
-  return <h1>App</h1>;
+  return <Registration />;
 }
 
 export default App;
