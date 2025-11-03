@@ -14,41 +14,60 @@ const registrationSchema = z.strictObject({
 })
 
 export const registrationController = async (req: Request, res: Response) => {
-  const result = registrationSchema.safeParse(req.body);
+  try {
+    const result = registrationSchema.safeParse(req.body);
   
-  if (!result.success) {
-    return res.status(400).json({ errors: treeifyError(result.error) });
+    if (!result.success) {
+      return res.status(400).json({
+        status: 400,
+        error: "Validation Error",
+        message: "Invalid input data",
+        details: treeifyError(result.error)
+      });
+    }
+    
+    const { name, email, password } = result.data;
+
+    const existingUser = await prisma.registration.findUnique({
+      where: {
+        email
+      }
+    })
+
+    if (existingUser) {
+      return res.status(409).json({
+        status: 409,
+        error: 'Conflict',
+        message: 'Email already exists!',
+        details: { email: ['Email already exists'] }
+      })
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await prisma.registration.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword
+      }
+    });
+
+    res.status(201).json({
+      status: 201,
+      message: 'User registered successfully',
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        createdAt: newUser.createdAt
+      }
+    })
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      error: 'InternalServerError',
+      message: 'Something went wrong',
+    })
   }
-  
-  const { name, email, password } = result.data;
-
-  const existingUser = await prisma.registration.findUnique({
-    where: {
-      email
-    }
-  })
-
-  if (existingUser) {
-    return res.status(409).json({ message: 'Email already exists!', })
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newUser = await prisma.registration.create({
-    data: {
-      name,
-      email,
-      password: hashedPassword
-    }
-  });
-
-  res.status(201).json({
-    message: 'User registered successfully',
-    user: {
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email,
-      createdAt: newUser.createdAt
-    }
-  })
 }
