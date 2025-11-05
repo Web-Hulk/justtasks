@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import loginRoute from './routes/loginRoute';
+import logoutRoute from './routes/logoutRoute';
 import profileRoute from './routes/profileRoute';
 import refreshRoute from './routes/refreshRoute';
 import registrationRoutes from './routes/registrationRoutes';
@@ -51,6 +52,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Routes
 app.use('/registration', limiter, registrationRoutes);
 app.use('/login', limiter, loginRoute);
+app.use('/logout', limiter, logoutRoute);
 app.use('/refresh', limiter, refreshRoute);
 
 app.use('/profile', limiter, profileRoute);
