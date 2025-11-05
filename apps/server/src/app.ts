@@ -3,6 +3,8 @@ import 'dotenv/config';
 import express, { json, urlencoded } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 import loginRoute from './routes/loginRoute';
 import profileRoute from './routes/profileRoute';
 import registrationRoutes from './routes/registrationRoutes';
@@ -25,6 +27,23 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(helmet());
+
+// Swagger
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'JUSTTASKS API',
+      version: '1.0.0',
+      description: 'API documentation for JUSTTASKS',
+    },
+  },
+  apis: ['./src/routes/*.ts'], // Path to your route files for JSDoc comments
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use('/registration', limiter, registrationRoutes);
