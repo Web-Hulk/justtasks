@@ -15,13 +15,13 @@ export const refreshController = (req: Request, res: Response) => {
     const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET as string) as JwtPayload;
 
     const accessToken = jwt.sign({ id: decoded?.id, email: decoded?.email }, process.env.JWT_SECRET as string, { expiresIn: '15s' });
-    const newRefreshToken = jwt.sign({ id: decoded?.id, email: decoded?.email }, process.env.JWT_SECRET as string, { expiresIn: '60s' });
+    const newRefreshToken = jwt.sign({ id: decoded?.id, email: decoded?.email }, process.env.JWT_SECRET as string, { expiresIn: decoded?.rememberMe ? '180s' : '60s' });
    
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 60 * 1000
+      maxAge: decoded?.rememberMe ? 180 * 1000 : 60 * 1000
     })
 
     return res.status(200).json({

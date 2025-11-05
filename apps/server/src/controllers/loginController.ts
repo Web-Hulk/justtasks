@@ -10,7 +10,8 @@ const passwordRules = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
 
 const loginSchema = z.strictObject({
   email: z.email('Invalid email').transform((val) => val.trim().toLocaleLowerCase()),
-  password: z.string().refine((val) => passwordRules.test(val), { message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character' })
+  password: z.string().refine((val) => passwordRules.test(val), { message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character' }),
+  rememberMe: z.boolean()
 })
 
 export const loginController = async (req: Request, res: Response) => {
@@ -29,7 +30,7 @@ export const loginController = async (req: Request, res: Response) => {
       });
     }
 
-    const { email, password } = result.data;
+    const { email, password, rememberMe } = result.data;
     const existingUser = await prisma.registration.findUnique({
       where: { email }
     })
@@ -52,13 +53,13 @@ export const loginController = async (req: Request, res: Response) => {
     }
 
     const accessToken = jwt.sign({ id: existingUser?.id, email: existingUser?.email }, process.env.JWT_SECRET as string, { expiresIn: '15s' });
-    const refreshToken = jwt.sign({ id: existingUser?.id, email: existingUser?.email }, process.env.JWT_SECRET as string, { expiresIn: '60s' });
+    const refreshToken = jwt.sign({ id: existingUser?.id, email: existingUser?.email }, process.env.JWT_SECRET as string, { expiresIn: rememberMe ? '180s' : '60s' });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 60 * 1000
+      maxAge: rememberMe ? 180 * 1000 : 60 * 1000
     })
 
     res.status(200).json({
