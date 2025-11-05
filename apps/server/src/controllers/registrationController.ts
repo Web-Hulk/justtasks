@@ -14,6 +14,9 @@ const registrationSchema = z.strictObject({
 })
 
 export const registrationController = async (req: Request, res: Response) => {
+  console.log('Registration Endpoint!');
+
+
   try {
     const result = registrationSchema.safeParse(req.body);
   
