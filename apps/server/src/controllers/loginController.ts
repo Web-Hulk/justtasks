@@ -38,7 +38,7 @@ export const loginController = async (req: Request, res: Response) => {
       return res.status(401).json({
         status: 401,
         error: "Unauthorized",
-        message: "Invalid email or password"
+        message: "Email or password is incorrect"
       });
     }
 
@@ -47,16 +47,24 @@ export const loginController = async (req: Request, res: Response) => {
       return res.status(401).json({
         status: 401,
         error: "Unauthorized",
-        message: "Invalid email or password"
+        message: "Email or password is incorrect"
       });
     }
 
-    const token = jwt.sign({ id: existingUser?.id, email: existingUser?.email }, process.env.JWT_SECRET as string, { expiresIn: '1800s' })
+    const accessToken = jwt.sign({ id: existingUser?.id, email: existingUser?.email }, process.env.JWT_SECRET as string, { expiresIn: '15s' });
+    const refreshToken = jwt.sign({ id: existingUser?.id, email: existingUser?.email }, process.env.JWT_SECRET as string, { expiresIn: '60s' });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 1000
+    })
 
     res.status(200).json({
       status: 200,
       message: 'User logged in successfully',
-      token,
+      accessToken,
       user: {
         id: existingUser.id,
         name: existingUser.name,
@@ -68,7 +76,7 @@ export const loginController = async (req: Request, res: Response) => {
     return res.status(500).json({
       status: 500,
       error: 'InternalServerError',
-      message: 'Something went wrong',
+      message: 'An unexpected error occurred during login. Please try again later.',
     })
   }
 }

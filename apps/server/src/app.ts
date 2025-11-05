@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import 'dotenv/config';
 import express, { json, urlencoded } from 'express';
@@ -7,6 +8,7 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import loginRoute from './routes/loginRoute';
 import profileRoute from './routes/profileRoute';
+import refreshRoute from './routes/refreshRoute';
 import registrationRoutes from './routes/registrationRoutes';
 
 const app = express()
@@ -27,6 +29,7 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(helmet());
+app.use(cookieParser())
 
 // Swagger
 const swaggerOptions = {
@@ -48,6 +51,8 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Routes
 app.use('/registration', limiter, registrationRoutes);
 app.use('/login', limiter, loginRoute);
+app.use('/refresh', limiter, refreshRoute);
+
 app.use('/profile', limiter, profileRoute);
 
 app.listen(port, () => {

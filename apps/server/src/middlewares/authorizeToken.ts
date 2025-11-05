@@ -21,7 +21,6 @@ export const authorizeToken = (req: Request, res: Response, next: NextFunction) 
 
     next();
   } catch (error) {
-    // My Postman returns 500 when token is expired...
     return res.status(401).json({
       status: 401,
       error: 'Unauthorized',
