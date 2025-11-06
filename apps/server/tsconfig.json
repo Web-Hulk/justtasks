@@ -15,6 +15,7 @@
       "@/controllers/*": ["./src/controllers/*"],
       "@/middlewares/*": ["./src/middlewares/*"],
       "@/routes/*": ["./src/routes/*"],
+      "@/services/*": ["./src/services/*"],
     }
   }
 }

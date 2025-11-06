@@ -1,51 +1,25 @@
+import { limiter } from '@/middlewares/limiter';
 import loginRoute from '@/routes/auth/loginRoute';
 import logoutRoute from '@/routes/auth/logoutRoute';
 import refreshRoute from '@/routes/auth/refreshRoute';
 import registrationRoute from '@/routes/auth/registrationRoute';
 import profileRoute from '@/routes/profileRoute';
+import { swaggerSpec } from '@/services/swagger';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import 'dotenv/config';
 import express, { json, urlencoded } from 'express';
-import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
-import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 const app = express()
 const port = process.env.PORT
-
-// Move to middleware!!! but this is probably not gonna used globally, just for selected routes
-const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000,
-	limit: 100,
-	message: {
-		status: 429,
-		error: 'TooManyRequests',
-		message: 'Too many requests from this IP, please try again later.'
-	}
-})
 
 app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(helmet());
 app.use(cookieParser())
-
-// Move to services - swagger.ts
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'JUSTTASKS API',
-      version: '1.0.0',
-      description: 'API documentation for JUSTTASKS',
-    },
-  },
-  apis: ['./src/routes/*/*.ts'], // Path to your route files for JSDoc comments
-};
-
-const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Swagger
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
