@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import type { Request, Response } from "express";
+import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { treeifyError, z } from 'zod';
 import { PrismaClient } from '../../generated/prisma';
@@ -10,7 +10,10 @@ const passwordRules = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
 
 const loginSchema = z.strictObject({
   email: z.email('Invalid email').transform((val) => val.trim().toLocaleLowerCase()),
-  password: z.string().refine((val) => passwordRules.test(val), { message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character' }),
+  password: z.string().refine((val) => passwordRules.test(val), {
+    message:
+      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+  }),
   rememberMe: z.boolean()
 });
 
@@ -20,11 +23,11 @@ export const loginController = async (req: Request, res: Response) => {
   try {
     const result = loginSchema.safeParse(req.body);
 
-    if (!result.success) {     
+    if (!result.success) {
       return res.status(400).json({
         status: 400,
-        error: "Validation Error",
-        message: "Invalid input data",
+        error: 'Validation Error',
+        message: 'Invalid input data',
         details: treeifyError(result.error)
       });
     }
@@ -38,8 +41,8 @@ export const loginController = async (req: Request, res: Response) => {
     if (!existingUser) {
       return res.status(401).json({
         status: 401,
-        error: "Unauthorized",
-        message: "Email or password is incorrect"
+        error: 'Unauthorized',
+        message: 'Email or password is incorrect'
       });
     }
 
@@ -81,8 +84,8 @@ export const loginController = async (req: Request, res: Response) => {
 
         return res.status(401).json({
           status: 401,
-          error: "Unauthorized",
-          message: "Email or password is incorrect"
+          error: 'Unauthorized',
+          message: 'Email or password is incorrect'
         });
       }
     }
@@ -96,11 +99,9 @@ export const loginController = async (req: Request, res: Response) => {
       }
     });
 
-    const accessToken = jwt.sign(
-      { id: existingUser.id, email: existingUser.email },
-      process.env.JWT_SECRET as string,
-      { expiresIn: '15s' }
-    );
+    const accessToken = jwt.sign({ id: existingUser.id, email: existingUser.email }, process.env.JWT_SECRET as string, {
+      expiresIn: '15s'
+    });
     const refreshToken = jwt.sign(
       { id: existingUser.id, email: existingUser.email },
       process.env.JWT_SECRET as string,
@@ -129,7 +130,7 @@ export const loginController = async (req: Request, res: Response) => {
     return res.status(500).json({
       status: 500,
       error: 'InternalServerError',
-      message: 'An unexpected error occurred during login. Please try again later.',
+      message: 'An unexpected error occurred during login. Please try again later.'
     });
   }
-}
+};

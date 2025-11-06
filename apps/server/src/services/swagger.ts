@@ -1,4 +1,4 @@
-import swaggerJSDoc from "swagger-jsdoc";
+import swaggerJSDoc from 'swagger-jsdoc';
 
 const swaggerOptions = {
   definition: {
@@ -6,10 +6,10 @@ const swaggerOptions = {
     info: {
       title: 'JUSTTASKS API',
       version: '1.0.0',
-      description: 'API documentation for JUSTTASKS',
-    },
+      description: 'API documentation for JUSTTASKS'
+    }
   },
-  apis: ['./src/routes/*/*.ts'], // Path to your route files for JSDoc comments
+  apis: ['./src/routes/*/*.ts'] // Path to your route files for JSDoc comments
 };
 
 export const swaggerSpec = swaggerJSDoc(swaggerOptions);

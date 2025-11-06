@@ -10,7 +10,7 @@ const router = Router();
  *     tags:
  *       - Auth
  *     summary: Register user
-*/
+ */
 router.post('/', registrationController);
 
 export default router;
