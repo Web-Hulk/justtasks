@@ -16,11 +16,9 @@ const loginSchema = z.strictObject({
 
 export const loginController = async (req: Request, res: Response) => {
   console.log('Login Endpoint!');
-  console.log('Received body:', req.body);
 
   try {
     const result = loginSchema.safeParse(req.body);
-    console.log('Validation result:', result);
 
     if (!result.success) {     
       return res.status(400).json({
@@ -32,15 +30,12 @@ export const loginController = async (req: Request, res: Response) => {
     }
 
     const { email, password, rememberMe } = result.data;
-    console.log('Parsed data:', { email, password, rememberMe });
 
     const existingUser = await prisma.registration.findUnique({
       where: { email }
     });
-    console.log('Existing user:', existingUser);
 
     if (!existingUser) {
-      console.log('User not found');
       return res.status(401).json({
         status: 401,
         error: "Unauthorized",
@@ -49,9 +44,7 @@ export const loginController = async (req: Request, res: Response) => {
     }
 
     // Check if account is locked
-    console.log('LockUntil:', existingUser.lockUntil);
     if (existingUser.lockUntil && existingUser.lockUntil > new Date()) {
-      console.log('Account is locked');
       return res.status(403).json({
         status: 403,
         error: 'AccountLocked',
@@ -60,21 +53,18 @@ export const loginController = async (req: Request, res: Response) => {
     }
 
     const isPasswordValid = await bcrypt.compare(password, existingUser.password);
-    console.log('Is password valid:', isPasswordValid);
 
     if (!isPasswordValid) {
       const attempts = (existingUser.failedLoginAttempts ?? 0) + 1;
-      console.log('Failed login attempts:', attempts);
 
       if (attempts >= 5) {
-        const lockUpdate = await prisma.registration.update({
+        await prisma.registration.update({
           where: { email },
           data: {
             failedLoginAttempts: 0,
             lockUntil: new Date(Date.now() + 1 * 60 * 1000) // 15 minutes from now
           }
         });
-        console.log('Lockout update:', lockUpdate);
 
         return res.status(403).json({
           status: 403,
@@ -82,13 +72,12 @@ export const loginController = async (req: Request, res: Response) => {
           message: 'Account locked due to too many failed login attempts. Try again later.'
         });
       } else {
-        const attemptsUpdate = await prisma.registration.update({
+        await prisma.registration.update({
           where: { email },
           data: {
             failedLoginAttempts: attempts
           }
         });
-        console.log('Attempts update:', attemptsUpdate);
 
         return res.status(401).json({
           status: 401,
@@ -106,7 +95,6 @@ export const loginController = async (req: Request, res: Response) => {
         lockUntil: null
       }
     });
-    console.log('Reset failedLoginAttempts and lockUntil for user:', email);
 
     const accessToken = jwt.sign(
       { id: existingUser.id, email: existingUser.email },
@@ -138,7 +126,6 @@ export const loginController = async (req: Request, res: Response) => {
       }
     });
   } catch (error) {
-    console.log('Error:', error);
     return res.status(500).json({
       status: 500,
       error: 'InternalServerError',
