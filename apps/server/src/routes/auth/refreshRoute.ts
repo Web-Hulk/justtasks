@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { refreshController } from "../controllers/refreshController";
+import { refreshController } from "../../controllers/auth/refreshController";
 
 const router = Router();
 

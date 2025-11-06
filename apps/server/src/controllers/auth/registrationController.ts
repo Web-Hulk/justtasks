@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import type { Request, Response } from 'express';
 import { treeifyError, z } from 'zod';
-import { PrismaClient } from '../generated/prisma';
+import { PrismaClient } from '../../generated/prisma';
 
 const prisma = new PrismaClient();
 
@@ -15,7 +15,6 @@ const registrationSchema = z.strictObject({
 
 export const registrationController = async (req: Request, res: Response) => {
   console.log('Registration Endpoint!');
-
 
   try {
     const result = registrationSchema.safeParse(req.body);
