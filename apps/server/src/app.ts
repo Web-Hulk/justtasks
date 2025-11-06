@@ -1,3 +1,8 @@
+import loginRoute from '@/routes/auth/loginRoute';
+import logoutRoute from '@/routes/auth/logoutRoute';
+import refreshRoute from '@/routes/auth/refreshRoute';
+import registrationRoute from '@/routes/auth/registrationRoute';
+import profileRoute from '@/routes/profileRoute';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import 'dotenv/config';
@@ -6,16 +11,11 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import loginRoute from './routes/auth/loginRoute';
-import logoutRoute from './routes/auth/logoutRoute';
-import refreshRoute from './routes/auth/refreshRoute';
-import registrationRoute from './routes/auth/registrationRoute';
-import profileRoute from './routes/profileRoute';
 
 const app = express()
 const port = process.env.PORT
 
-// Move to services or other related folder
+// Move to middleware!!! but this is probably not gonna used globally, just for selected routes
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000,
 	limit: 100,
@@ -32,7 +32,7 @@ app.use(urlencoded({ extended: false }));
 app.use(helmet());
 app.use(cookieParser())
 
-// Swagger
+// Move to services - swagger.ts
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -47,6 +47,7 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
+// Swagger
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes

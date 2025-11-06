@@ -10,6 +10,11 @@
     "moduleDetection": "force",
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@/controllers/*": ["./src/controllers/*"],
+      "@/middlewares/*": ["./src/middlewares/*"],
+      "@/routes/*": ["./src/routes/*"],
+    }
   }
 }
