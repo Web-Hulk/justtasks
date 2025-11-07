@@ -13,7 +13,6 @@ import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
 
 const app = express();
-const port = process.env.PORT;
 
 app.use(cors());
 app.use(json());
@@ -32,6 +31,4 @@ app.use('/refresh', limiter, refreshRoute);
 
 app.use('/profile', limiter, profileRoute);
 
-app.listen(port, () => {
-  console.log(`Server running at http://127.0.0.1:${port}/`);
-});
+export default app;
