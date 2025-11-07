@@ -1,5 +1,5 @@
-import { Router } from "express";
-import { refreshController } from "../../controllers/auth/refreshController";
+import { refreshController } from '@/controllers/auth/refreshController';
+import { Router } from 'express';
 
 const router = Router();
 

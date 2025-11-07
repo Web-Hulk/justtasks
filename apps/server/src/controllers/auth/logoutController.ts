@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { Request, Response } from 'express';
 
 export const logoutController = (req: Request, res: Response) => {
   res.cookie('refreshToken', '', {
@@ -11,5 +11,5 @@ export const logoutController = (req: Request, res: Response) => {
   return res.status(200).json({
     status: 200,
     message: 'Logged out successfully.'
-  })
-}
+  });
+};

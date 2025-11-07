@@ -1,5 +1,5 @@
+import { registrationController } from '@/controllers/auth/registrationController';
 import { Router } from 'express';
-import { registrationController } from '../../controllers/auth/registrationController';
 
 const router = Router();
 
@@ -10,7 +10,7 @@ const router = Router();
  *     tags:
  *       - Auth
  *     summary: Register user
-*/
+ */
 router.post('/', registrationController);
 
 export default router;
