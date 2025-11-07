@@ -1,21 +1,11 @@
+import { loginSchema } from '@/schemas/authSchemas';
 import bcrypt from 'bcrypt';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { treeifyError, z } from 'zod';
+import { treeifyError } from 'zod';
 import { PrismaClient } from '../../generated/prisma';
 
 const prisma = new PrismaClient();
-
-const passwordRules = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
-
-const loginSchema = z.strictObject({
-  email: z.email('Invalid email').transform((val) => val.trim().toLocaleLowerCase()),
-  password: z.string().refine((val) => passwordRules.test(val), {
-    message:
-      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
-  }),
-  rememberMe: z.boolean()
-});
 
 export const loginController = async (req: Request, res: Response) => {
   console.log('Login Endpoint!');
