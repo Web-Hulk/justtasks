@@ -1,5 +1,6 @@
 // eslint.config.js
 import js from '@eslint/js';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import importPlugin from 'eslint-plugin-import';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import prettier from 'eslint-plugin-prettier/recommended';
@@ -16,6 +17,7 @@ export default tseslint.config({
     react.configs.flat.recommended,
     importPlugin.flatConfigs.recommended,
     jsxA11y.flatConfigs.recommended,
+    ...pluginQuery.configs['flat/recommended'],
     prettier
   ],
   languageOptions: {
