@@ -1,3 +1,4 @@
+import { loginSchema } from '@/schemas/authSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useMutation } from '@tanstack/react-query';
@@ -7,17 +8,6 @@ import { Navigate } from 'react-router';
 import { z } from 'zod';
 
 const BASE_URL = 'http://127.0.0.1:3000';
-
-const passwordRules = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
-
-const loginSchema = z.strictObject({
-  email: z.email('Invalid email').transform((val) => val.trim().toLocaleLowerCase()),
-  password: z.string().refine((val) => passwordRules.test(val), {
-    message:
-      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
-  }),
-  rememberMe: z.boolean()
-});
 
 type Schema = z.infer<typeof loginSchema>;
 
