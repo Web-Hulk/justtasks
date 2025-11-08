@@ -39,7 +39,7 @@ export const Login = () => {
       ) : (
         <>
           {isError ? <span>{`Error: ${error.message}`}</span> : null}
-          {isSuccess ? <Navigate replace to="/registration" /> : null}
+          {isSuccess ? <Navigate replace to="/dashboard" /> : null}
 
           <div className="max-w-xl w-full border-2 border-black rounded-lg p-4 bg-white shadow">
             <h1 className="text-center">
