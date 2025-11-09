@@ -1,6 +1,6 @@
+import { SideBar } from '@/components/SideBar/SideBar';
+import { TopBar } from '@/components/TopBar/TopBar';
 import { Outlet } from 'react-router';
-import { SideBar } from '../SideBar/SideBar';
-import { TopBar } from '../TopBar/TopBar';
 
 export const Layout = () => {
   return (
