@@ -16,7 +16,7 @@ export const verifyEmailController = async (req: Request, res: Response) => {
     });
   }
 
-  const user = await prisma.registration.findFirst({
+  const user = await prisma.user.findFirst({
     where: { activationToken: token }
   });
 
@@ -28,7 +28,7 @@ export const verifyEmailController = async (req: Request, res: Response) => {
     });
   }
 
-  await prisma.registration.update({
+  await prisma.user.update({
     where: { id: user.id },
     data: {
       isActivated: true,
@@ -37,5 +37,6 @@ export const verifyEmailController = async (req: Request, res: Response) => {
     }
   });
 
+  // Set Production link for Login
   return res.redirect('http://localhost:5173/login');
 };

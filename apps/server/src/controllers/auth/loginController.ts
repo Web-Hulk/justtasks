@@ -24,7 +24,7 @@ export const loginController = async (req: Request, res: Response) => {
 
     const { email, password, rememberMe } = result.data;
 
-    const existingUser = await prisma.registration.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { email }
     });
 
@@ -51,7 +51,7 @@ export const loginController = async (req: Request, res: Response) => {
       const attempts = (existingUser.failedLoginAttempts ?? 0) + 1;
 
       if (attempts >= 5) {
-        await prisma.registration.update({
+        await prisma.user.update({
           where: { email },
           data: {
             failedLoginAttempts: 0,
@@ -65,7 +65,7 @@ export const loginController = async (req: Request, res: Response) => {
           message: 'Account locked due to too many failed login attempts. Try again later.'
         });
       } else {
-        await prisma.registration.update({
+        await prisma.user.update({
           where: { email },
           data: {
             failedLoginAttempts: attempts
@@ -81,7 +81,7 @@ export const loginController = async (req: Request, res: Response) => {
     }
 
     // Successful login: reset failed attempts and lockUntil
-    await prisma.registration.update({
+    await prisma.user.update({
       where: { email },
       data: {
         failedLoginAttempts: 0,

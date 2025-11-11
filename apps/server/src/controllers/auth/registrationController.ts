@@ -54,7 +54,7 @@ export const registrationController = async (req: Request, res: Response) => {
 
     const { name, email, password } = result.data;
 
-    const existingUser = await prisma.registration.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: {
         email
       }
@@ -75,7 +75,7 @@ export const registrationController = async (req: Request, res: Response) => {
     // In few places you add expiration time - awesome part to move to reusable function which create DateTime
     const activationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    await prisma.registration.create({
+    await prisma.user.create({
       data: {
         name,
         email,
@@ -86,20 +86,34 @@ export const registrationController = async (req: Request, res: Response) => {
       }
     });
 
-    TRANSPORTER.sendMail({
-      // Set business email address
-      from: 'welcome@justtasks.com',
-      // Change 'test@user.com' to email before going to production
-      to: 'test@user.com',
-      subject: 'Confirm your email and launch your tasks on JUSTTASKS!',
-      template: 'verifyEmail',
-      // Keep hardcoded customer email for development purpose
-      // Change 'test@user.com' to email before going to production
-      context: {
-        email: 'test@user.com',
-        activationLink: `http://127.0.0.1:3000/verify-email?token=${activationToken}`
-      }
-    } as MailTemplateOptions);
+    try {
+      await TRANSPORTER.sendMail({
+        // Set business email address
+        from: 'welcome@justtasks.com',
+        // Change 'test@user.com' to email before going to production
+        to: 'test@user.com',
+        subject: 'Confirm your email and launch your tasks on JUSTTASKS!',
+        template: 'verifyEmail',
+        // Keep hardcoded customer email for development purpose
+        // Change 'test@user.com' to email before going to production
+        context: {
+          email: 'test@user.com',
+          activationLink: `http://127.0.0.1:3000/verify-email?token=${activationToken}`
+        }
+      } as MailTemplateOptions);
+    } catch (error) {
+      console.error('Email sending failed: ', error);
+
+      await prisma.user.delete({
+        where: { email }
+      });
+
+      return res.status(500).json({
+        status: 500,
+        error: 'MailboxUnavailable',
+        message: 'Could not send email'
+      });
+    }
 
     return res.status(201).json({
       status: 201,
