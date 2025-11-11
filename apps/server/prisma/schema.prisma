@@ -14,8 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// This is incorrect semantic table name - should be User or something like this
-model Registration {
+model User {
   id                  Int       @id @default(autoincrement())
   name                String    @db.VarChar(255)
   email               String    @unique @db.VarChar(255)
