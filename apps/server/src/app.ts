@@ -3,6 +3,7 @@ import loginRoute from '@/routes/auth/loginRoute';
 import logoutRoute from '@/routes/auth/logoutRoute';
 import refreshRoute from '@/routes/auth/refreshRoute';
 import registrationRoute from '@/routes/auth/registrationRoute';
+import verifyEmailRoute from '@/routes/auth/verifyEmailRoute';
 import profileRoute from '@/routes/profileRoute';
 import { swaggerSpec } from '@/services/swagger';
 import cookieParser from 'cookie-parser';
@@ -28,6 +29,7 @@ app.use('/registration', limiter, registrationRoute);
 app.use('/login', limiter, loginRoute);
 app.use('/logout', limiter, logoutRoute);
 app.use('/refresh', limiter, refreshRoute);
+app.use('/verify-email', limiter, verifyEmailRoute);
 
 app.use('/profile', limiter, profileRoute);
 

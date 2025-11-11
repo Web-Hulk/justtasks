@@ -40,7 +40,7 @@ export const Registration = () => {
           {isError ? <span>{`Error: ${error.message}`}</span> : null}
 
           {/* Change destination, cause you should verify account by the code from email */}
-          {isSuccess ? <Navigate replace to="/login" /> : null}
+          {isSuccess ? <Navigate replace to="/verify-email" /> : null}
 
           <div className="max-w-xl w-full border-2 border-black rounded-lg p-4 bg-white shadow">
             <h1 className="text-center text-2xl">

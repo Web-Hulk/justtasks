@@ -14,6 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// This is incorrect semantic table name - should be User or something like this
 model Registration {
   id                  Int       @id @default(autoincrement())
   name                String    @db.VarChar(255)
@@ -22,4 +23,7 @@ model Registration {
   createdAt           DateTime  @default(now())
   failedLoginAttempts Int       @default(0)
   lockUntil           DateTime?
+  isActivated         Boolean   @default(false)
+  activationToken     String?
+  activationExpires   DateTime?
 }

@@ -1,10 +1,19 @@
 import { registrationSchema } from '@/schemas/authSchemas';
+import { EmailContent } from '@/services/emailContent';
 import bcrypt from 'bcrypt';
 import type { Request, Response } from 'express';
+import nodemailer from 'nodemailer';
+import { v4 as uuidv4 } from 'uuid';
 import { treeifyError } from 'zod';
 import { PrismaClient } from '../../generated/prisma';
 
 const prisma = new PrismaClient();
+
+const TRANSPORTER = nodemailer.createTransport({
+  host: 'localhost',
+  port: 1025,
+  secure: false
+});
 
 export const registrationController = async (req: Request, res: Response) => {
   console.log('Registration Endpoint!');
@@ -39,24 +48,36 @@ export const registrationController = async (req: Request, res: Response) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const activationToken = uuidv4();
 
-    const newUser = await prisma.registration.create({
+    // In few places you add expiration time - awesome part to move to reusable function which create DateTime
+    const activationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    await prisma.registration.create({
       data: {
         name,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        isActivated: false,
+        activationToken,
+        activationExpires
       }
     });
 
-    res.status(201).json({
+    await TRANSPORTER.sendMail({
+      // Set business email address
+      from: 'welcome@justtasks.com',
+      // Change 'test@user.com' to email before going to production
+      to: 'test@user.com',
+      subject: 'Confirm your email and launch your tasks on JUSTTASKS!',
+      // Keep hardcoded customer email for development purpose
+      // Change 'test@user.com' to email before going to production
+      html: EmailContent('test@user.com', activationToken)
+    });
+
+    return res.status(201).json({
       status: 201,
-      message: 'User registered successfully',
-      user: {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        createdAt: newUser.createdAt
-      }
+      message: 'User registered successfully'
     });
   } catch (error) {
     return res.status(500).json({
