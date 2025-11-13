@@ -37,6 +37,12 @@ export const verifyEmailController = async (req: Request, res: Response) => {
     }
   });
 
+  // return response for the VerifyEmail.tsx
+  res.status(200).json({
+    status: 200,
+    message: 'Account verified sucessfully'
+  });
+
   // Set Production link for Login
   return res.redirect('http://localhost:5173/login');
 };

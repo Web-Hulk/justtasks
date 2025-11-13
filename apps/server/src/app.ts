@@ -1,4 +1,6 @@
 import { limiter } from '@/middlewares/limiter';
+import activationStatusRoute from '@/routes/auth/activationStatusRoute';
+import generateActivationLinkRoute from '@/routes/auth/generateActivationLinkRoute';
 import loginRoute from '@/routes/auth/loginRoute';
 import logoutRoute from '@/routes/auth/logoutRoute';
 import refreshRoute from '@/routes/auth/refreshRoute';
@@ -30,6 +32,8 @@ app.use('/login', limiter, loginRoute);
 app.use('/logout', limiter, logoutRoute);
 app.use('/refresh', limiter, refreshRoute);
 app.use('/verify-email', limiter, verifyEmailRoute);
+app.use('/generate-activation-link', limiter, generateActivationLinkRoute);
+app.use('/activation-status', limiter, activationStatusRoute);
 
 app.use('/profile', limiter, profileRoute);
 

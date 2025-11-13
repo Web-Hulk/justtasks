@@ -28,6 +28,11 @@ export const Registration = () => {
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     console.log('Registration data: ', data);
+    console.log(data.email);
+
+    // Add service to manage localStorage
+    // Delete email from LocalStorage when error during onSubmit happens
+    localStorage.setItem('userEmail', data.email);
     mutate(data);
   };
 
@@ -38,8 +43,6 @@ export const Registration = () => {
       ) : (
         <>
           {isError ? <span>{`Error: ${error.message}`}</span> : null}
-
-          {/* Change destination, cause you should verify account by the code from email */}
           {isSuccess ? <Navigate replace to="/verify-email" /> : null}
 
           <div className="max-w-xl w-full border-2 border-black rounded-lg p-4 bg-white shadow">
@@ -82,8 +85,8 @@ export const Registration = () => {
               </div>
 
               <button
-                className="w-full rounded-md bg-gray-300 p-2 my-2 font-bold cursor-pointer"
                 type="submit"
+                className="w-full rounded-md bg-gray-300 p-2 my-2 font-bold cursor-pointer"
                 disabled={isPending}
               >
                 Sign Up
