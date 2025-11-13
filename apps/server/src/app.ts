@@ -33,7 +33,7 @@ app.use('/logout', limiter, logoutRoute);
 app.use('/refresh', limiter, refreshRoute);
 app.use('/verify-email', limiter, verifyEmailRoute);
 app.use('/generate-activation-link', limiter, generateActivationLinkRoute);
-app.use('/activation-status', limiter, activationStatusRoute);
+app.use('/activation-status', activationStatusRoute);
 
 app.use('/profile', limiter, profileRoute);
 

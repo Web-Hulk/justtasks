@@ -7,10 +7,10 @@ import { VerifyEmailStatus } from './VerifyEmailStatus';
 const BASE_URL = 'http://127.0.0.1:3000';
 
 export const VerifyEmail = () => {
-  const [email, setEmail] = useState<string>('test@user.com');
+  const [email, setEmail] = useState<string>('');
   const [status, setStatus] = useState<'pending' | 'success' | 'failure'>('pending');
   const [isResendButtonDisabled, setIsResendButtonDisabled] = useState<boolean>(false);
-  const [timer, setTimer] = useState<number>(5);
+  const [timer, setTimer] = useState<number>(60);
   const intervalRef = useRef(60);
   const navigate = useNavigate();
 
@@ -53,6 +53,14 @@ export const VerifyEmail = () => {
       setStatus('pending');
     }
   }, [isActivated.data]);
+
+  useEffect(() => {
+    if (status === 'success' || status === 'failure') {
+      setIsResendButtonDisabled(false);
+      setTimer(60);
+      clearInterval(intervalRef.current);
+    }
+  }, [status]);
 
   const resendMutation = useMutation({
     mutationFn: async () => {
