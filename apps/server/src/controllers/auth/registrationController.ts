@@ -1,6 +1,8 @@
 import { registrationSchema } from '@/schemas/authSchemas';
+import { sendActivationEmail } from '@/services/sendActivationEmail';
 import bcrypt from 'bcrypt';
 import type { Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 import { treeifyError } from 'zod';
 import { PrismaClient } from '../../generated/prisma';
 
@@ -23,7 +25,7 @@ export const registrationController = async (req: Request, res: Response) => {
 
     const { name, email, password } = result.data;
 
-    const existingUser = await prisma.registration.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: {
         email
       }
@@ -39,24 +41,41 @@ export const registrationController = async (req: Request, res: Response) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const activationToken = uuidv4();
 
-    const newUser = await prisma.registration.create({
+    // In few places you add expiration time - awesome part to move to reusable function which create DateTime
+    const activationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    await prisma.user.create({
       data: {
         name,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        isActivated: false,
+        activationToken,
+        activationExpires
       }
     });
 
-    res.status(201).json({
+    try {
+      await sendActivationEmail(email, activationToken);
+    } catch (error) {
+      console.error('Email sending failed: ', error);
+
+      await prisma.user.delete({
+        where: { email }
+      });
+
+      return res.status(500).json({
+        status: 500,
+        error: 'MailboxUnavailable',
+        message: 'Could not send email'
+      });
+    }
+
+    return res.status(201).json({
       status: 201,
-      message: 'User registered successfully',
-      user: {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        createdAt: newUser.createdAt
-      }
+      message: 'User registered successfully'
     });
   } catch (error) {
     return res.status(500).json({

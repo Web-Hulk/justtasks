@@ -14,7 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Registration {
+model User {
   id                  Int       @id @default(autoincrement())
   name                String    @db.VarChar(255)
   email               String    @unique @db.VarChar(255)
@@ -22,4 +22,7 @@ model Registration {
   createdAt           DateTime  @default(now())
   failedLoginAttempts Int       @default(0)
   lockUntil           DateTime?
+  isActivated         Boolean   @default(false)
+  activationToken     String?
+  activationExpires   DateTime?
 }
