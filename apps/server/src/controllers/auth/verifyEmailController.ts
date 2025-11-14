@@ -37,6 +37,5 @@ export const verifyEmailController = async (req: Request, res: Response) => {
     }
   });
 
-  // Set Production link for Login
   return res.redirect('http://localhost:5173/login');
 };

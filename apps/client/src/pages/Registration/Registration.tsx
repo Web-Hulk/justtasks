@@ -31,8 +31,7 @@ export const Registration = () => {
     console.log(data.email);
 
     // Add service to manage localStorage
-    // Delete email from LocalStorage when error during onSubmit happens
-    localStorage.setItem('userEmail', data.email);
+    localStorage.setItem('email', data.email);
     mutate(data);
   };
 

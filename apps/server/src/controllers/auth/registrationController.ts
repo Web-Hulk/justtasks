@@ -31,10 +31,6 @@ export const registrationController = async (req: Request, res: Response) => {
       }
     });
 
-    // await prisma.user.delete({
-    //   where: { email: 'betty.scott@gmail.com' }
-    // });
-
     if (existingUser) {
       return res.status(409).json({
         status: 409,
