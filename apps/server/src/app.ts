@@ -1,10 +1,12 @@
 import { limiter } from '@/middlewares/limiter';
 import activationStatusRoute from '@/routes/auth/activationStatusRoute';
+import forgotPasswordRoute from '@/routes/auth/forgotPasswordRoute';
 import generateActivationLinkRoute from '@/routes/auth/generateActivationLinkRoute';
 import loginRoute from '@/routes/auth/loginRoute';
 import logoutRoute from '@/routes/auth/logoutRoute';
 import refreshRoute from '@/routes/auth/refreshRoute';
 import registrationRoute from '@/routes/auth/registrationRoute';
+import resetPasswordRoute from '@/routes/auth/resetPasswordRoute';
 import verifyEmailRoute from '@/routes/auth/verifyEmailRoute';
 import profileRoute from '@/routes/profileRoute';
 import { swaggerSpec } from '@/services/swagger';
@@ -34,6 +36,8 @@ app.use('/refresh', limiter, refreshRoute);
 app.use('/verify-email', limiter, verifyEmailRoute);
 app.use('/generate-activation-link', limiter, generateActivationLinkRoute);
 app.use('/activation-status', activationStatusRoute);
+app.use('/forgot-password', forgotPasswordRoute);
+app.use('/reset-password', resetPasswordRoute);
 
 app.use('/profile', limiter, profileRoute);
 

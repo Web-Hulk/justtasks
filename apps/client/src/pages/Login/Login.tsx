@@ -79,7 +79,7 @@ export const Login = () => {
                   </label>
                 </div>
 
-                <a href="/">
+                <a href="/forgot-password">
                   <strong>Forgot password</strong>
                 </a>
               </div>
