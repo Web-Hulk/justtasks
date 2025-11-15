@@ -2,6 +2,7 @@ import { Layout } from '@/components/Layout/Layout';
 import { Billing } from '@/pages/Billing/Billing';
 import { Calendar } from '@/pages/Calendar/Calendar';
 import { Dashboard } from '@/pages/Dashboard/Dashboard';
+import { ForgotPassword } from '@/pages/ForgotPassword/ForgotPassword';
 import { Insights } from '@/pages/Insights/Insights';
 import { Landing } from '@/pages/Landing/Landing';
 import { Login } from '@/pages/Login/Login';
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
         Component: Registration
       },
       {
+        path: '/forgot-password',
+        Component: ForgotPassword
+      },
+      {
         path: '/reset-password',
         Component: ResetPassword
       },
@@ -38,6 +43,7 @@ export const router = createBrowserRouter([
         Component: VerifyEmail
       },
       { path: '/faq', Component: Settings },
+
       // Private routes
       {
         Component: Layout,
