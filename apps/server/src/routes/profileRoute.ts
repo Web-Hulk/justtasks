@@ -1,6 +1,6 @@
-import { profileController } from '@/controllers/profileController';
-import { authorizeToken } from '@/middlewares/authorizeToken';
 import { Router } from 'express';
+import { profileController } from '../controllers/profileController.js';
+import { authorizeToken } from '../middlewares/authorizeToken.js';
 
 const router = Router();
 

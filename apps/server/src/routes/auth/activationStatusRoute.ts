@@ -1,5 +1,5 @@
-import { activationStatusController } from '@/controllers/auth/activationStatusController';
 import { Router } from 'express';
+import { activationStatusController } from '../../controllers/auth/activationStatusController.js';
 
 const router = Router();
 

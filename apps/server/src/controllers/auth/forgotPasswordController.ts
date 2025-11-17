@@ -1,8 +1,8 @@
-import { sendResetPasswordEmail } from '@/services/sendResetPasswordEmail';
 import type { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import * as z from 'zod';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/prisma/index.js';
+import { sendResetPasswordEmail } from '../../services/sendResetPasswordEmail.js';
 
 const prisma = new PrismaClient();
 

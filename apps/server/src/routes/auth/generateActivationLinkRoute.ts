@@ -1,5 +1,5 @@
-import { generateActivationLinkController } from '@/controllers/auth/generateActivationLinkController';
 import { Router } from 'express';
+import { generateActivationLinkController } from '../../controllers/auth/generateActivationLinkController.js';
 
 const router = Router();
 
