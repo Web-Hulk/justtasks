@@ -1,0 +1,17 @@
+name: "justtasks"
+
+services:
+  client:
+    image: client
+    ports:
+      - 5173:80
+    environment:
+      - NODE_ENV=development
+  # Add DB connection
+  server:
+    image: server
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=development
+    
