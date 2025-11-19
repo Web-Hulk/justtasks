@@ -2,9 +2,15 @@ name: "justtasks"
 
 services:
   client:
-    image: client
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+      target: dev
     ports:
-      - 5173:80
+      - 5173:5173
+    volumes:
+      - ./client:/client
+      - client_node_modules:/client/node_modules
     environment:
       - NODE_ENV=development
   # Add DB connection
@@ -15,3 +21,5 @@ services:
     environment:
       - NODE_ENV=development
     
+volumes:
+  client_node_modules:
