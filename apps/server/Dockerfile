@@ -1,3 +1,4 @@
+# Add local DB for DEVELOPMENT
 FROM node:20-slim AS base
 WORKDIR /server
 
@@ -23,15 +24,17 @@ ENV DATABASE_URL=${DATABASE_URL}
 RUN pnpm exec prisma generate --schema=prisma/schema.prisma
 RUN pnpm run build
 
-FROM node:20-slim AS final
+FROM node:20-slim AS prod
 WORKDIR /server
+
+RUN apt-get update && apt-get install -y --no-install-recommends openssl \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN corepack enable
 
 COPY --from=build /server/dist ./dist
 COPY --from=base /server/package.json ./
 COPY --from=base /server/pnpm-lock.yaml ./
-# Not sure if it is needed (Only if used in runtime!) - I will test it when container is created
 COPY --from=build /server/prisma ./prisma
 COPY --from=build /server/src/generated ./src/generated
 
