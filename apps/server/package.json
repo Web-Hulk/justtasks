@@ -7,7 +7,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.15.0",
   "scripts": {
-    "dev": "nodemon --watch src --exec tsx src/server.ts",
+    "dev": "nodemon --legacy-watch --watch src --exec tsx src/server.ts",
     "build": "tsc && cpx \"src/generated/**/*\" dist/generated",
     "start": "node dist/server.js",
     "upgrade": "pnpm up --latest"

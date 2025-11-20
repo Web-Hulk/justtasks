@@ -1,5 +1,5 @@
 # Add local DB for DEVELOPMENT
-FROM node:20-slim AS base
+FROM node:20-alpine AS base
 WORKDIR /server
 
 RUN corepack enable 
@@ -24,11 +24,10 @@ ENV DATABASE_URL=${DATABASE_URL}
 RUN pnpm exec prisma generate --schema=prisma/schema.prisma
 RUN pnpm run build
 
-FROM node:20-slim AS prod
+FROM node:20-alpine AS prod
 WORKDIR /server
 
-RUN apt-get update && apt-get install -y --no-install-recommends openssl \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache openssl
 
 RUN corepack enable
 
