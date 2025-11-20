@@ -1,5 +1,5 @@
-import { forgotPasswordController } from '@/controllers/auth/forgotPasswordController';
 import { Router } from 'express';
+import { forgotPasswordController } from '../../controllers/auth/forgotPasswordController.js';
 
 const router = Router();
 

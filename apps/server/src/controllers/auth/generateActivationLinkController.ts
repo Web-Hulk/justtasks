@@ -1,7 +1,7 @@
-import { sendActivationEmail } from '@/services/sendActivationEmail';
 import type { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/prisma/index.js';
+import { sendActivationEmail } from '../../services/sendActivationEmail.js';
 
 const prisma = new PrismaClient();
 

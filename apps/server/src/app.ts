@@ -1,21 +1,21 @@
-import { limiter } from '@/middlewares/limiter';
-import activationStatusRoute from '@/routes/auth/activationStatusRoute';
-import forgotPasswordRoute from '@/routes/auth/forgotPasswordRoute';
-import generateActivationLinkRoute from '@/routes/auth/generateActivationLinkRoute';
-import loginRoute from '@/routes/auth/loginRoute';
-import logoutRoute from '@/routes/auth/logoutRoute';
-import refreshRoute from '@/routes/auth/refreshRoute';
-import registrationRoute from '@/routes/auth/registrationRoute';
-import resetPasswordRoute from '@/routes/auth/resetPasswordRoute';
-import verifyEmailRoute from '@/routes/auth/verifyEmailRoute';
-import profileRoute from '@/routes/profileRoute';
-import { swaggerSpec } from '@/services/swagger';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import 'dotenv/config';
 import express, { json, urlencoded } from 'express';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
+import { limiter } from './middlewares/limiter.js';
+import activationStatusRoute from './routes/auth/activationStatusRoute.js';
+import forgotPasswordRoute from './routes/auth/forgotPasswordRoute.js';
+import generateActivationLinkRoute from './routes/auth/generateActivationLinkRoute.js';
+import loginRoute from './routes/auth/loginRoute.js';
+import logoutRoute from './routes/auth/logoutRoute.js';
+import refreshRoute from './routes/auth/refreshRoute.js';
+import registrationRoute from './routes/auth/registrationRoute.js';
+import resetPasswordRoute from './routes/auth/resetPasswordRoute.js';
+import verifyEmailRoute from './routes/auth/verifyEmailRoute.js';
+import profileRoute from './routes/profileRoute.js';
+import { swaggerSpec } from './services/swagger.js';
 
 const app = express();
 

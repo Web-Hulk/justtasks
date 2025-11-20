@@ -1,9 +1,9 @@
-import { loginSchema } from '@/schemas/authSchemas';
 import bcrypt from 'bcrypt';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { treeifyError } from 'zod';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/prisma/index.js';
+import { loginSchema } from '../../schemas/authSchemas.js';
 
 const prisma = new PrismaClient();
 

@@ -1,4 +1,4 @@
-import { TRANSPORTER } from './transporter';
+import { TRANSPORTER } from './transporter.js';
 
 interface MailTemplateOptions {
   from: string;

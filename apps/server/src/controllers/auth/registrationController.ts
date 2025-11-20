@@ -1,10 +1,10 @@
-import { registrationSchema } from '@/schemas/authSchemas';
-import { sendActivationEmail } from '@/services/sendActivationEmail';
 import bcrypt from 'bcrypt';
 import type { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { treeifyError } from 'zod';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/prisma/index.js';
+import { registrationSchema } from '../../schemas/authSchemas.js';
+import { sendActivationEmail } from '../../services/sendActivationEmail.js';
 
 const prisma = new PrismaClient();
 
