@@ -26,7 +26,13 @@ services:
       - server_node_modules:/server/node_modules
     environment:
       - NODE_ENV=development
-    
+  client-test:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: dev
+    command: pnpm run test
+
 volumes:
   client_node_modules:
   server_node_modules:

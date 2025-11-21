@@ -36,7 +36,7 @@ export const Registration = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div data-testid="registration" className="min-h-screen flex items-center justify-center bg-gray-100">
       {isPending ? (
         <CircularProgress />
       ) : (

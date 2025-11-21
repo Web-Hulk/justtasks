@@ -1,3 +1,3 @@
 export const Project = () => {
-  return <h1>Project</h1>;
+  return <h1 data-testid="project">Project</h1>;
 };
