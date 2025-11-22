@@ -1,3 +1,3 @@
 export const Insights = () => {
-  return <h1>Insights</h1>;
+  return <h1 data-testid="insights">Insights</h1>;
 };

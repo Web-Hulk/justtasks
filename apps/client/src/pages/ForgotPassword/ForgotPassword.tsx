@@ -32,7 +32,7 @@ export const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div data-testid="forgot-password" className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="max-w-md w-full border-2 border-black rounded-lg p-4 bg-white shadow">
         {isSuccess ? (
           <>
