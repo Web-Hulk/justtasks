@@ -26,9 +26,16 @@ services:
       - server_node_modules:/server/node_modules
     environment:
       - NODE_ENV=development
+  # It shouldn't run simultaneuosly with client and server, just once?
   client-test:
     build:
       context: ./client
+      dockerfile: Dockerfile
+      target: dev
+    command: pnpm run test
+  server-test:
+    build:
+      context: ./server
       dockerfile: Dockerfile
       target: dev
     command: pnpm run test
