@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider, type RouteObject } from 'react-router';
-import { describe, expect, it } from 'vitest';
 
 import { Billing } from '@/pages/Billing/Billing';
 import { Calendar } from '@/pages/Calendar/Calendar';
