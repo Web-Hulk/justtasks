@@ -14,11 +14,11 @@ ENV NODE_ENV=development
 
 EXPOSE 3000
 
-CMD ["pnpm", "run", "dev"]
+CMD ["/server/entrypoint.sh"]
 
 FROM base AS build
 ENV NODE_ENV=production
-ARG DATABASE_URL="postgresql://user:pass@localhost:5432/db"
+ARG DATABASE_URL="postgresql://postgres:postgres@postgres:5432/justtasks"
 ENV DATABASE_URL=${DATABASE_URL}
 
 RUN pnpm exec prisma generate --schema=prisma/schema.prisma

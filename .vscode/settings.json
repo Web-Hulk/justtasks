@@ -7,7 +7,7 @@
             "port": 5432,
             "driver": "PostgreSQL",
             "username": "postgres",
-            "database": "postgres",
+            "database": "justtasks",
             "name": "justtasks",
             "password": "password"
         }

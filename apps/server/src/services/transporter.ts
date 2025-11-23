@@ -4,7 +4,7 @@ import path from 'path';
 
 // Export to service
 export const TRANSPORTER = nodemailer.createTransport({
-  host: 'localhost',
+  host: 'maildev',
   port: 1025,
   secure: false
 });
