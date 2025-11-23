@@ -1,3 +1,3 @@
 export const Billing = () => {
-  return <h1>Billing</h1>;
+  return <h1 data-testid="billing">Billing</h1>;
 };

@@ -13,9 +13,9 @@ services:
       - client_node_modules:/client/node_modules
     environment:
       - NODE_ENV=development
-  # Add DB connection
+
   server:
-    build: 
+    build:
       context: ./server
       dockerfile: Dockerfile
       target: dev
@@ -26,7 +26,67 @@ services:
       - server_node_modules:/server/node_modules
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/justtasks
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - server
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=justtasks
+    ports:
+      - 5432:5432
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - server
+
+  client-test:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      target: dev
+    command: pnpm run test
     
+  server-test:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+      target: dev
+    command: pnpm run test
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/justtasks
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - server
+
+  maildev:
+    image: maildev/maildev
+    ports:
+      - 1025:1025
+      - 1080:1080
+    networks:
+      - server
+
 volumes:
   client_node_modules:
   server_node_modules:
+  postgres:
+
+networks:
+  server:

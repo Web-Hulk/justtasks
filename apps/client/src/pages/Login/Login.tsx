@@ -33,7 +33,7 @@ export const Login = () => {
 
   // Will be rewritten to MUI
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div data-testid="login" className="min-h-screen flex items-center justify-center bg-gray-100">
       {isPending ? (
         <CircularProgress />
       ) : (
