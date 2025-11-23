@@ -1,0 +1,64 @@
+# or production, you may want to use a different Postgres image configuration (e.g., backups, monitoring) depending on your deployment target.
+name: "justtasks_prod"
+
+services:
+  client:
+    build: 
+      context: ../../apps/client
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - 5173:5173
+    volumes:
+      - ../../apps/client:/client
+      - client_node_modules:/client/node_modules
+    environment:
+      - NODE_ENV=${NODE_ENV}
+
+  server:
+    build:
+      context: ../../apps/server
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - ../../apps/server:/server
+      - server_node_modules:/server/node_modules
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - server
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - 5432:5432
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - server
+
+volumes:
+  client_node_modules:
+  server_node_modules:
+  postgres:
+
+networks:
+  server:

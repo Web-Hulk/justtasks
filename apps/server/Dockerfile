@@ -8,6 +8,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
 
 COPY . .
+RUN chmod +x /server/entrypoint.sh
 
 FROM base AS dev
 ENV NODE_ENV=development
@@ -18,8 +19,6 @@ CMD ["/server/entrypoint.sh"]
 
 FROM base AS build
 ENV NODE_ENV=production
-ARG DATABASE_URL="postgresql://postgres:postgres@postgres:5432/justtasks"
-ENV DATABASE_URL=${DATABASE_URL}
 
 RUN pnpm exec prisma generate --schema=prisma/schema.prisma
 RUN pnpm run build
