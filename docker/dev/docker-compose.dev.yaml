@@ -1,0 +1,93 @@
+name: "justtasks_dev"
+
+services:
+  client:
+    build: 
+      context: ../../apps/client
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - 5173:5173
+    volumes:
+      - ../../apps/client:/client
+      - client_node_modules:/client/node_modules
+    environment:
+      - NODE_ENV=${NODE_ENV}
+
+  server:
+    build:
+      context: ../../apps/server
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - ../../apps/server:/server
+      - server_node_modules:/server/node_modules
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - server
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - 5432:5432
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - server
+
+  client-test:
+    build:
+      context: ../../apps/client
+      dockerfile: Dockerfile
+      target: dev
+    command: pnpm run test
+    
+  server-test:
+    build:
+      context: ../../apps/server
+      dockerfile: Dockerfile
+      target: dev
+    command: pnpm run test
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - server
+
+  maildev:
+    image: maildev/maildev
+    ports:
+      - 1025:1025
+      - 1080:1080
+    networks:
+      - server
+
+volumes:
+  client_node_modules:
+  server_node_modules:
+  postgres:
+
+networks:
+  server:

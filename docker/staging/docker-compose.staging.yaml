@@ -1,32 +1,33 @@
-name: "justtasks"
+name: "justtasks_staging"
 
 services:
   client:
     build: 
-      context: ./client
+      context: ../../apps/client
       dockerfile: Dockerfile
       target: dev
     ports:
       - 5173:5173
     volumes:
-      - ./client:/client
+      - ../../apps/client:/client
       - client_node_modules:/client/node_modules
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV}
 
   server:
     build:
-      context: ./server
+      context: ../../apps/server
       dockerfile: Dockerfile
       target: dev
     ports:
-      - 3000:3000
+      - ${PORT}:${PORT}
     volumes:
-      - ./server:/server
+      - ../../apps/server:/server
       - server_node_modules:/server/node_modules
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/justtasks
+      - NODE_ENV=${NODE_ENV}
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
     depends_on:
       postgres:
         condition: service_healthy
@@ -36,9 +37,9 @@ services:
   postgres:
     image: postgres:15
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=justtasks
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
     restart: always
@@ -55,20 +56,20 @@ services:
 
   client-test:
     build:
-      context: ./client
+      context: ../../apps/client
       dockerfile: Dockerfile
       target: dev
     command: pnpm run test
     
   server-test:
     build:
-      context: ./server
+      context: ../../apps/server
       dockerfile: Dockerfile
       target: dev
     command: pnpm run test
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/justtasks
+      - NODE_ENV=${NODE_ENV}
+      - DATABASE_URL=${DATABASE_URL}
     depends_on:
       postgres:
         condition: service_healthy
