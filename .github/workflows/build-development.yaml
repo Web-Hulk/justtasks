@@ -18,12 +18,13 @@ jobs:
       - name: Add pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 10.15.0
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22.20.0'
           cache: 'pnpm'
+          cache-dependency-path: app/client/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install
 
@@ -39,12 +40,13 @@ jobs:
       - name: Add pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 10.15.0
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22.20.0'
           cache: 'pnpm'
+          cache-dependency-path: app/client/pnpm-lock.yaml
       - name: Add dependencies
         run: pnpm install
 
@@ -69,12 +71,13 @@ jobs:
       - name: Add pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 10.15.0
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22.20.0'
           cache: 'pnpm'
+          cache-dependency-path: app/client/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install
       - name: Run tests
@@ -92,12 +95,13 @@ jobs:
       - name: Add pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 10.15.0
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22.20.0'
           cache: 'pnpm'
+          cache-dependency-path: app/client/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install
       - name: Run tests
