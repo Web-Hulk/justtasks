@@ -2,54 +2,106 @@ name: Building and testing dev
 run-name: ${{ github.actor }} is building and testing dev
 
 on:
-    push:
-        branches: [ 'feat/**' ]
+  push:
+    branches: [ 'feat/**' ]
 
 jobs:
-    build:
-      name: Build
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-        - name: Add pnpm
-          uses: pnpm/action-setup@v4
-          with:
-            version: 10
-        - name: Set up Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: '20'
-            cache: 'pnpm'
-        - name: Install dependencies
-          run: pnpm install
+  build-client:
+    name: Build FE
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/client
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Add pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
 
-    # docker:
-    #   name: Docker
-    #   runs-on: ubuntu-latest
-    #   steps:
-    #     - name: Checkout code
-    #       uses: actions/checkout@v4
-    #     - name: Run Docker
-    #       run: docker compose -f docker/dev/docker-compose.dev.yaml --env-file docker/dev/.env.dev up
+  build-server:
+    name: Build BE
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/server
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Add pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Add dependencies
+        run: pnpm install
 
-    test:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-        - name: Add pnpm
-          uses: pnpm/action-setup@v4
-          with:
-            version: 10
-        - name: Set up Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: '20'
-            cache: 'pnpm'
-        - name: Install dependencies
-          run: pnpm install
-        - name: Run tests
-          run: pnpm test
+  # docker:
+  #   name: Docker
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #     - name: Run Docker
+  #       run: docker compose -f docker/dev/docker-compose.dev.yaml --env-file docker/dev/.env.dev up
+
+  test-client:
+    name: Tests FE
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/client
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Add pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run tests
+        run: pnpm run test
+
+  test-server:
+    name: Tests BE
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/server
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Add pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run tests
+        run: pnpm run test
+
 
 
