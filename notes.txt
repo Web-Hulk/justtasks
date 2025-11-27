@@ -1,0 +1,124 @@
+Phase 1: User Info & Management
+GET /me — Get current user info
+PUT /me — Update user info (name, email, password)
+DELETE /me — Delete own account
+
+Backend:
+
+Implement GET /me to return the current user’s info (such as id, name, email, avatar, role, etc.).
+Implement PUT /me to allow the user to update their info. Validate input with zod and log any changes for auditing.
+Implement DELETE /me to let the user delete their own account. Use a soft delete (mark as deleted, don’t remove from DB) and log the deletion for audit purposes.
+Make sure all /me endpoints are protected with JWT authentication middleware.
+Only return the necessary user info—never send sensitive fields like passwords or tokens.
+Add documentation for these endpoints in Swagger.
+Apply rate limiting to the PUT and DELETE endpoints to prevent abuse.
+
+Frontend:
+
+Use GET /me to fetch and display user info after login (profile details, avatar, role, etc.).
+Use PUT /me to send updated profile data to the backend when the user edits their profile.
+Use DELETE /me to confirm and send a delete request; after deletion, log out the user and redirect them appropriately.
+Handle 401 responses: if the JWT is expired or invalid, log out the user and redirect to the login page.
+Validate input on the frontend before sending it to the backend (ideally using the same rules as zod).
+Only display allowed user info on the frontend—never show sensitive data.
+
+
+
+
+
+
+
+
+
+Phase 2: RBAC (Role-Based Access Control)
+GET /roles — List roles (admin only)
+PUT /users/:id/role — Change user role (admin only)
+GET /users — List all users (admin only)
+GET /users/:id — Get user by ID (admin only)
+DELETE /users/:id — Delete user by ID (admin only)
+
+Phase 3: Session Management
+GET /sessions — List active sessions for current user
+DELETE /sessions/:sessionId — Revoke session
+
+Phase 4: Security & Audit
+GET /audit-logs — List audit logs (admin only)
+POST /change-password — Change password
+
+Phase 5: 2FA (Optional, Advanced)
+POST /2fa/setup — Setup 2FA
+POST /2fa/verify — Verify 2FA code
+POST /2fa/disable — Disable 2FA
+
+Phase 6: Email & Account Verification
+POST /email/change — Request email change
+POST /email/verify — Verify new email
+
+Phase 7: OAuth/Social Login (Optional, Advanced)
+GET /oauth/:provider — Start OAuth flow
+GET /oauth/:provider/callback — Handle OAuth callback
+
+Phase 8: Other Features
+Add rate limiting, account lockout, error handling, logging, and Swagger docs as you go.
+
+--------------------------
+
+What’s Missing or Worth Adding?
+
+/me → To fetch current user profile (useful for FE after login).
+/change-password → For logged-in users to update password.
+/resend-verification-code → In case user didn’t receive the email.
+/deactivate-account or /delete-account → GDPR compliance.
+/update-email → If users want to change their email.
+Rate limiting & IP tracking → Already partially covered with limiter, but consider per-user limits.
+Optional OAuth endpoints (Google, GitHub) → Even if not MVP, good for future.
+
+
+
+
+
+
+
+
+
+
+
+1. User Info & Management
+GET /me — Get current authenticated user info (alias for /profile)
+PUT /me — Update current user info (name, email, password)
+DELETE /me — Delete own account
+
+2. RBAC (Role-Based Access Control)
+GET /roles — List available roles (admin only)
+PUT /users/:id/role — Change user role (admin only)
+GET /users — List all users (admin only)
+GET /users/:id — Get user by ID (admin only)
+DELETE /users/:id — Delete user by ID (admin only)
+
+3. Session Management
+GET /sessions — List active sessions for current user
+DELETE /sessions/:sessionId — Revoke session (logout from other devices)
+
+4. Security & Audit
+GET /audit-logs — List security/audit logs (admin only)
+POST /change-password — Change password (authenticated user)
+POST /2fa/setup — Setup two-factor authentication (optional, advanced)
+POST /2fa/verify — Verify 2FA code (optional, advanced)
+POST /2fa/disable — Disable 2FA (optional, advanced)
+
+5. Email & Account Verification
+POST /email/change — Request email change
+POST /email/verify — Verify new email
+
+6. OAuth/Social Login (optional, advanced)
+GET /oauth/:provider — Start OAuth flow
+GET /oauth/:provider/callback — Handle OAuth callback
+
+Other Features to Consider
+- Rate limiting on sensitive endpoints (already present).
+- JWT rotation and refresh token invalidation.
+- Account lockout after repeated failed logins.
+- Password strength validation (already present).
+- Email templates for all flows (activation, reset, change).
+- Comprehensive error handling and logging.
+- Swagger/OpenAPI documentation for all endpoints.
