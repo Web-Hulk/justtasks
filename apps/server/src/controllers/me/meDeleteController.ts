@@ -20,7 +20,7 @@ export const meDeleteController = async (req: Request, res: Response) => {
     const { email } = decoded as { email: string };
 
     // Fetch user from DB
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email, isDeleted: false } });
 
     if (!user || user.isDeleted) {
       // Audit log: failed deletion due to user not found or already deleted

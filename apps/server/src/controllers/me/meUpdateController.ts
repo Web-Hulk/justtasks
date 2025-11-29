@@ -52,7 +52,7 @@ export const meUpdateController = async (req: Request, res: Response) => {
 
     const { email } = authUser as { email: string };
     const userExisting = await prisma.user.findUnique({
-      where: { email }
+      where: { email, isDeleted: false }
     });
 
     if (!userExisting) {

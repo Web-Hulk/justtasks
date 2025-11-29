@@ -5,6 +5,7 @@ import { treeifyError } from 'zod';
 import { PrismaClient } from '../../generated/prisma/index.js';
 import { registrationSchema } from '../../schemas/authSchemas.js';
 import { sendActivationEmail } from '../../services/sendActivationEmail.js';
+import { Role } from '../../types/types.js';
 
 const prisma = new PrismaClient();
 
@@ -26,9 +27,7 @@ export const registrationController = async (req: Request, res: Response) => {
     const { name, email, password } = result.data;
 
     const existingUser = await prisma.user.findUnique({
-      where: {
-        email
-      }
+      where: { email, isDeleted: false }
     });
 
     if (existingUser) {
@@ -53,7 +52,8 @@ export const registrationController = async (req: Request, res: Response) => {
         password: hashedPassword,
         isActivated: false,
         activationToken,
-        activationExpires
+        activationExpires,
+        role: Role.USER
       }
     });
 

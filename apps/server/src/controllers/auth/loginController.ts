@@ -25,7 +25,7 @@ export const loginController = async (req: Request, res: Response) => {
     const { email, password, rememberMe } = result.data;
 
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email, isDeleted: false }
     });
 
     if (!existingUser) {
@@ -89,9 +89,13 @@ export const loginController = async (req: Request, res: Response) => {
       }
     });
 
-    const accessToken = jwt.sign({ id: existingUser.id, email: existingUser.email }, process.env.JWT_SECRET as string, {
-      expiresIn: '15s'
-    });
+    const accessToken = jwt.sign(
+      { id: existingUser.id, email: existingUser.email },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: '15s'
+      }
+    );
     const refreshToken = jwt.sign(
       { id: existingUser.id, email: existingUser.email },
       process.env.JWT_SECRET as string,

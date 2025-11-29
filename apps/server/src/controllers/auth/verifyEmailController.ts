@@ -17,7 +17,7 @@ export const verifyEmailController = async (req: Request, res: Response) => {
   }
 
   const user = await prisma.user.findFirst({
-    where: { activationToken: token }
+    where: { activationToken: token, isDeleted: false }
   });
 
   if (!user || !user.activationExpires || new Date() > user.activationExpires) {

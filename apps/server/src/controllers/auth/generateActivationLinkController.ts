@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 export const generateActivationLinkController = async (req: Request, res: Response) => {
   const { email } = req.body;
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({ where: { email, isDeleted: false } });
 
   if (!user) {
     return res.status(200).json({
