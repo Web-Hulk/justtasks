@@ -42,6 +42,7 @@ app.use('/activation-status', activationStatusRoute);
 app.use('/forgot-password', forgotPasswordRoute);
 app.use('/reset-password', resetPasswordRoute);
 
+// RBAC
 app.use('/me', meRoute);
 app.use('/roles', rolesRoute);
 app.use('/users', usersRoute);

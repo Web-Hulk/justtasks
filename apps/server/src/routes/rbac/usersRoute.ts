@@ -5,13 +5,12 @@ import { userController } from '../../controllers/rbac/users/userController.js';
 import { usersController } from '../../controllers/rbac/users/usersController.js';
 import { authorizeToken } from '../../middlewares/authorizeToken.js';
 import { checkPermissions } from '../../middlewares/checkPermissions.js';
-import { Role } from '../../types/types.js';
 
 const router = Router();
 
-router.get('/', authorizeToken, checkPermissions([Role.ADMIN]), usersController);
-router.put('/:id/role', authorizeToken, checkPermissions([Role.ADMIN]), updateUserController);
-router.get('/:id', authorizeToken, checkPermissions([Role.ADMIN]), userController);
-router.delete('/:id', authorizeToken, checkPermissions([Role.ADMIN]), deleteUserController);
+router.get('/', authorizeToken, checkPermissions, usersController);
+router.put('/:id/role', authorizeToken, checkPermissions, updateUserController);
+router.get('/:id', authorizeToken, checkPermissions, userController);
+router.delete('/:id', authorizeToken, checkPermissions, deleteUserController);
 
 export default router;
