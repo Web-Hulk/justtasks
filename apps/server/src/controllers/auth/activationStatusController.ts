@@ -25,7 +25,7 @@ export const activationStatusController = async (req: Request, res: Response) =>
     const { email } = parseResult.data;
 
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email, isDeleted: false }
     });
 
     if (!existingUser) {

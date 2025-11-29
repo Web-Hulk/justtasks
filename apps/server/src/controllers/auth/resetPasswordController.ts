@@ -46,9 +46,7 @@ export const resetPasswordController = async (req: Request, res: Response) => {
     }
 
     const existingUser = await prisma.user.findFirst({
-      where: {
-        resetPasswordToken: token
-      }
+      where: { resetPasswordToken: token, isDeleted: false }
     });
 
     if (

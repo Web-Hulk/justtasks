@@ -22,20 +22,55 @@ Handle 401 responses: if the JWT is expired or invalid, log out the user and red
 Validate input on the frontend before sending it to the backend (ideally using the same rules as zod).
 Only display allowed user info on the frontend—never show sensitive data.
 
-
-
-
-
-
-
-
-
 Phase 2: RBAC (Role-Based Access Control)
 GET /roles — List roles (admin only)
-PUT /users/:id/role — Change user role (admin only)
 GET /users — List all users (admin only)
 GET /users/:id — Get user by ID (admin only)
+PUT /users/:id/role — Change user role (admin only)
 DELETE /users/:id — Delete user by ID (admin only)
+
+Backend
+
+Add a role field to the User model (e.g., enum: 'user' | 'admin').
+Update registration logic to assign user role by default.
+Create middleware to check user roles (e.g., authorizeRole('admin')).
+Implement GET /roles endpoint (admin only).
+Implement PUT /users/:id/role endpoint to change user roles (admin only).
+Implement GET /users endpoint to list all users (admin only).
+Implement GET /users/:id endpoint to get user by ID (admin only).
+Implement DELETE /users/:id endpoint to delete user by ID (admin only).
+Add audit logging for all role changes and user management actions.
+Add Swagger documentation for all new endpoints.
+Add rate limiting to sensitive admin endpoints.
+
+Frontend
+
+Add logic to fetch current user’s role after login (from /me).
+Implement route guards to restrict admin pages to users with admin role.
+Create an Admin Page with:
+List of all users (GET /users)
+Ability to change user roles (PUT /users/:id/role)
+Ability to delete users (DELETE /users/:id)
+Display available roles (from GET /roles) in role management UI.
+Show error messages for forbidden actions (403) and conflicts (409).
+Hide admin features from non-admin users in the UI.
+Validate input before sending role changes or deletions.
+Handle 401/403 responses by redirecting or showing appropriate messages.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Phase 3: Session Management
 GET /sessions — List active sessions for current user

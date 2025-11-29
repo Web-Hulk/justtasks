@@ -17,7 +17,7 @@ export const meController = async (req: Request, res: Response) => {
 
     const { email } = decoded as { email: string };
     const userData = await prisma.user.findUnique({
-      where: { email }
+      where: { email, isDeleted: false }
     });
 
     if (!userData || userData.isDeleted) {

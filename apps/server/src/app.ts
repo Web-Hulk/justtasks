@@ -16,6 +16,8 @@ import resetPasswordRoute from './routes/auth/resetPasswordRoute.js';
 import verifyEmailRoute from './routes/auth/verifyEmailRoute.js';
 import meRoute from './routes/meRoute.js';
 import profileRoute from './routes/profileRoute.js';
+import rolesRoute from './routes/rbac/rolesRoute.js';
+import usersRoute from './routes/rbac/usersRoute.js';
 import { swaggerSpec } from './services/swagger.js';
 
 const app = express();
@@ -41,6 +43,8 @@ app.use('/forgot-password', forgotPasswordRoute);
 app.use('/reset-password', resetPasswordRoute);
 
 app.use('/me', meRoute);
+app.use('/roles', rolesRoute);
+app.use('/users', usersRoute);
 
 app.use('/profile', limiter, profileRoute);
 
