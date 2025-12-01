@@ -13,8 +13,9 @@ import logoutRoute from './routes/auth/logoutRoute.js';
 import refreshRoute from './routes/auth/refreshRoute.js';
 import registrationRoute from './routes/auth/registrationRoute.js';
 import resetPasswordRoute from './routes/auth/resetPasswordRoute.js';
+import sessionsRoute from './routes/auth/session/sessionsRoute.js';
 import verifyEmailRoute from './routes/auth/verifyEmailRoute.js';
-import meRoute from './routes/meRoute.js';
+import meRoute from './routes/me/meRoute.js';
 import profileRoute from './routes/profileRoute.js';
 import rolesRoute from './routes/rbac/rolesRoute.js';
 import usersRoute from './routes/rbac/usersRoute.js';
@@ -41,6 +42,8 @@ app.use('/generate-activation-link', limiter, generateActivationLinkRoute);
 app.use('/activation-status', activationStatusRoute);
 app.use('/forgot-password', forgotPasswordRoute);
 app.use('/reset-password', resetPasswordRoute);
+
+app.use('/sessions', sessionsRoute);
 
 // RBAC
 app.use('/me', meRoute);
