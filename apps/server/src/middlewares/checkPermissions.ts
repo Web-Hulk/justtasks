@@ -36,6 +36,7 @@ export const checkPermissions = async (req: Request, res: Response, next: NextFu
 
     const { role } = userExisting;
 
+    // Move to /service
     const path = normalizePath(`${req.baseUrl}${req.route.path}`);
     const key = `${req.method}:${path}`;
     const matrixRoles = permissionsMatrix[key];

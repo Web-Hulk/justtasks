@@ -11,8 +11,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  relationMode = "prisma"
+  url          = env("DATABASE_URL")
 }
 
 enum Role {
@@ -35,4 +36,20 @@ model User {
   activationExpires    DateTime?
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
+  sessions             Session[]
+}
+
+model Session {
+  id            String   @id @default(uuid())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  lastUsedAt    DateTime @updatedAt
+  ipAddress     String   @db.VarChar(255)
+  userAgent     String   @db.VarChar(255)
+  deviceName    String?  @db.VarChar(255)
+  location      String?  @db.VarChar(255)
+  oauthProvider String?  @db.VarChar(255)
+  refreshToken  String   @db.VarChar(255)
+  isRevoked     Boolean  @default(false)
 }

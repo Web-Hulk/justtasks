@@ -57,24 +57,48 @@ Hide admin features from non-admin users in the UI.
 Validate input before sending role changes or deletions.
 Handle 401/403 responses by redirecting or showing appropriate messages.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Phase 3: Session Management
-GET /sessions — List active sessions for current user
-DELETE /sessions/:sessionId — Revoke session
+
+Backend
+
+- Add Session model to DB (id, userId, createdAt, lastUsedAt, ipAddress, userAgent, deviceName, location, oauthProvider, refreshToken, isRevoked).
+- Create session on login (store all info above).
+- Implement GET /sessions endpoint (list all active sessions for current user).
+- Implement DELETE /sessions/:sessionId endpoint (revoke session).
+- Implement POST /sessions/logout-all endpoint (revoke all sessions for user).
+- Implement PUT /sessions/:sessionId endpoint (update session info (e.g., rename device, mark as trusted).).
+- Update middleware to check session validity (isRevoked, expiry).
+- On refresh, rotate refresh token and update session.
+- Prevent use of revoked/expired sessions for API or refresh.
+
+- Add audit logging for session actions (creation, revocation, suspicious activity).
+- Document endpoints in Swagger.
+
+Frontend
+
+- Fetch and display sessions in user profile/security page.
+- Add "Log out" button for each session.
+- Add "Log out from all devices" button.
+- Handle session revocation and expired tokens (auto-logout, redirect).
+- Show device info, last activity, location if possible.
+- Educate users about session management and security.
+- Handle edge cases (e.g., cannot revoke current session, show error).
+
+Advanced/optional features:
+
+    Device fingerprinting (identify devices more reliably, e.g., using user agent, IP, or hardware info).
+
+Edge cases to handle (step by step):
+
+    Track and display device info and location (show user which devices are logged in, and where).
+    Rate limit session endpoints (protect session management endpoints from abuse).
+
+Step-by-step:
+6. On logout:
+    - Revoke session in DB.
+    - Invalidate refresh token.
+7. OAuth login:
+    - After OAuth callback, create/find user, create session, issue JWTs.
 
 Phase 4: Security & Audit
 GET /audit-logs — List audit logs (admin only)
@@ -96,6 +120,24 @@ GET /oauth/:provider/callback — Handle OAuth callback
 Phase 8: Other Features
 Add rate limiting, account lockout, error handling, logging, and Swagger docs as you go.
 
+Phase 9: Advanced RBAC Features
+
+- Permission-based RBAC: Move beyond simple roles to granular permissions (e.g., canEditUser, canDeleteUser).
+- Hierarchical roles: Support role inheritance (e.g., superadmin inherits admin permissions).
+- Dynamic roles & permissions: Manage roles/permissions via UI or API, store in database.
+- Resource-based permissions: Scope permissions to specific resources (e.g., canEditProject:123).
+- Attribute-Based Access Control (ABAC): Make access decisions based on user/resource/context attributes.
+- Policy engines: Integrate with tools like Casbin or Oso for flexible, declarative access control.
+- Delegated administration: Allow scoped admin powers (e.g., department or team admins).
+- Multi-tenancy support: Isolate roles and permissions per tenant/organization.
+- UI for role & permission management: Build admin UI for managing roles, permissions, assignments.
+- Permission caching: Cache permissions for performance, invalidate on changes.
+- Permission testing: Automated tests to ensure permissions are enforced correctly.
+- Temporary roles/permissions: Support time-limited access (e.g., grant admin for 24 hours).
+- Impersonation: Allow admins to impersonate users for troubleshooting (with audit logging).
+- Integration with external identity providers: Sync roles/permissions from LDAP, SAML, OAuth, etc.
+
+
 --------------------------
 
 What’s Missing or Worth Adding?
@@ -107,6 +149,36 @@ What’s Missing or Worth Adding?
 /update-email → If users want to change their email.
 Rate limiting & IP tracking → Already partially covered with limiter, but consider per-user limits.
 Optional OAuth endpoints (Google, GitHub) → Even if not MVP, good for future.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
