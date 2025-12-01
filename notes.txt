@@ -71,24 +71,6 @@ Backend
 - On refresh, rotate refresh token and update session.
 - Prevent use of revoked/expired sessions for API or refresh.
 
-3. On refresh, rotate refresh token and update session
-What does “rotate” mean?
-    When a user uses a refresh token to get new tokens, generate a new refresh token and update the session record with the new token.
-    This prevents replay attacks (someone stealing an old refresh token).
-Should you update or create a new session?
-    Update the existing session (same device, same sessionId).
-    Only create a new session on login from a new device/browser.
-Verdict:
-    On refresh, update the session with a new refresh token (“rotate”), don’t create a new session.
-
-4. Prevent use of revoked/expired sessions for API or refresh
-What does this mean?
-    If a session is revoked (user logged out from device), or expired, block all API requests and refresh attempts using that session.
-    This ensures that logging out or session expiry actually stops access.
-Verdict:
-    Always check session status before allowing API access or token refresh.
-    If session is revoked/expired, reject the request (401/403).
-
 - Add audit logging for session actions (creation, revocation, suspicious activity).
 - Document endpoints in Swagger.
 
@@ -102,35 +84,21 @@ Frontend
 - Educate users about session management and security.
 - Handle edge cases (e.g., cannot revoke current session, show error).
 
+Advanced/optional features:
+
+    Device fingerprinting (identify devices more reliably, e.g., using user agent, IP, or hardware info).
+
+Edge cases to handle (step by step):
+
+    Track and display device info and location (show user which devices are logged in, and where).
+    Rate limit session endpoints (protect session management endpoints from abuse).
+
 Step-by-step:
-5. On refresh:
-    - Only issue new tokens if session is still active.
-    - Rotate refresh token and update session.
 6. On logout:
     - Revoke session in DB.
     - Invalidate refresh token.
 7. OAuth login:
     - After OAuth callback, create/find user, create session, issue JWTs.
-
-Edge Cases:
-- Session expiry/auto-logout.
-- Prevent use of revoked/expired sessions.
-- Prevent revoking current session (or handle logout gracefully).
-- Track and display device info, location.
-- Rate limit session endpoints.
-
-What’s missing?
-    GET /sessions/:sessionId (view details for a specific session)
-    Soft delete vs. hard delete clarification (you already mention isRevoked)
-    More advanced device fingerprinting (optional)
-    Session expiry logic details (absolute vs. sliding expiration)
-
-
-
-
-
-
-
 
 Phase 4: Security & Audit
 GET /audit-logs — List audit logs (admin only)

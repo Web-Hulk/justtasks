@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { UAParser } from 'ua-parser-js';
 import { treeifyError } from 'zod';
 import { PrismaClient } from '../../generated/prisma/index.js';
 import { loginSchema } from '../../schemas/authSchemas.js';
@@ -93,7 +95,7 @@ export const loginController = async (req: Request, res: Response) => {
       { id: existingUser.id, email: existingUser.email },
       process.env.JWT_SECRET as string,
       {
-        expiresIn: '15s'
+        expiresIn: '1h'
       }
     );
     const refreshToken = jwt.sign(
@@ -101,6 +103,59 @@ export const loginController = async (req: Request, res: Response) => {
       process.env.JWT_SECRET as string,
       { expiresIn: rememberMe ? '180s' : '60s' }
     );
+
+    // Move to reusable service
+    const parser = new UAParser();
+    const userAgent = req.headers['user-agent'] || '';
+    const uaResult = parser.setUA(userAgent).getResult();
+    const deviceName = [uaResult.os.name, uaResult.browser.name].join(' ') || userAgent;
+
+    const existingSession = await prisma.session.findFirst({
+      where: { deviceName, userId: existingUser.id }
+    });
+
+    let session;
+
+    if (existingSession) {
+      session = await prisma.session.update({
+        where: { id: existingSession.id },
+        data: {
+          lastUsedAt: new Date(),
+          refreshToken
+        }
+      });
+    } else {
+      session = await prisma.session.create({
+        data: {
+          id: randomUUID(),
+          userId: existingUser.id,
+          createdAt: new Date(),
+          lastUsedAt: new Date(),
+          ipAddress: 'N/A',
+          userAgent,
+          deviceName,
+          // location: '',
+          // oauthProvider: '',
+          refreshToken,
+          isRevoked: false
+        }
+      });
+    }
+
+    if (!session) {
+      return res.status(404).json({
+        status: 404,
+        error: 'NotFound',
+        message: `Session not found.`
+      });
+    }
+
+    res.cookie('sessionId', session.id, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: rememberMe ? 180 * 1000 : 60 * 1000
+    });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -117,7 +172,8 @@ export const loginController = async (req: Request, res: Response) => {
         id: existingUser.id,
         name: existingUser.name,
         email: existingUser.email,
-        createdAt: existingUser.createdAt
+        createdAt: existingUser.createdAt,
+        session: session
       }
     });
   } catch (error) {
