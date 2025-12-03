@@ -15,6 +15,7 @@ import registrationRoute from './routes/auth/registrationRoute.js';
 import resetPasswordRoute from './routes/auth/resetPasswordRoute.js';
 import sessionsRoute from './routes/auth/session/sessionsRoute.js';
 import verifyEmailRoute from './routes/auth/verifyEmailRoute.js';
+import changePasswordRoute from './routes/changePasswordRoute.js';
 import meRoute from './routes/me/meRoute.js';
 import profileRoute from './routes/profileRoute.js';
 import rolesRoute from './routes/rbac/rolesRoute.js';
@@ -44,6 +45,8 @@ app.use('/forgot-password', forgotPasswordRoute);
 app.use('/reset-password', resetPasswordRoute);
 
 app.use('/sessions', sessionsRoute);
+
+app.use('/change-password', changePasswordRoute);
 
 // RBAC
 app.use('/me', meRoute);
