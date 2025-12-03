@@ -100,9 +100,45 @@ Step-by-step:
 7. OAuth login:
     - After OAuth callback, create/find user, create session, issue JWTs.
 
-Phase 4: Security & Audit
+Phase 4: Security & Audit (NOT STARTED)
+
 GET /audit-logs — List audit logs (admin only)
 POST /change-password — Change password
+
+Backend
+
+Design and add an AuditLog model to your database
+    Fields: id, userId, action, status, timestamp, ipAddress, userAgent, details (optional)
+
+Implement audit logging logic
+    Log key actions: login, logout, password change, session creation/revocation, role changes, suspicious activity, account changes
+
+Create GET /audit-logs endpoint (admin only)
+    Return paginated list of audit logs, filter by user, action, date, etc.
+
+Log the password change in audit logs
+
+Add audit logging to all sensitive endpoints
+    Include user info, action, status, device info, and details
+
+Protect audit log endpoints with RBAC middleware
+    Only allow admins to access GET /audit-logs
+
+Add Swagger/OpenAPI documentation for new endpoints
+Add rate limiting to /change-password and /audit-logs endpoints
+
+Frontend
+
+Add "Change Password" form in user profile/settings
+    Call POST /change-password, handle errors and success
+
+Create an Audit Log page for admins
+    Fetch and display logs from GET /audit-logs
+    Add filters (by user, action, date)
+
+Show clear error/success messages for password changes and audit log actions
+Hide audit log features from non-admin users
+Handle 401/403 responses by redirecting or showing appropriate messages
 
 Phase 5: 2FA (Optional, Advanced)
 POST /2fa/setup — Setup 2FA
@@ -136,7 +172,6 @@ Phase 9: Advanced RBAC Features
 - Temporary roles/permissions: Support time-limited access (e.g., grant admin for 24 hours).
 - Impersonation: Allow admins to impersonate users for troubleshooting (with audit logging).
 - Integration with external identity providers: Sync roles/permissions from LDAP, SAML, OAuth, etc.
-
 
 --------------------------
 
