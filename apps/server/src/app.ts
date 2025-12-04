@@ -49,7 +49,7 @@ app.use('/sessions', sessionsRoute);
 
 app.use('/change-password', changePasswordRoute);
 
-app.use('/change-email', changeEmailRoute);
+app.use('/email', changeEmailRoute);
 
 // RBAC
 app.use('/me', meRoute);

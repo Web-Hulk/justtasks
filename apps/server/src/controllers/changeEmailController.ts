@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { treeifyError, z } from 'zod';
 import { PrismaClient } from '../generated/prisma/index.js';
-import { sendActivationEmail } from '../services/sendActivationEmail.js';
+import { sendAuthorizedActivationEmail } from '../services/sendAuthorizedActivationEmail.js';
 
 const prisma = new PrismaClient();
 
@@ -64,7 +64,6 @@ export const changeEmailController = async (req: Request, res: Response) => {
     await prisma.user.update({
       where: { id: userId },
       data: {
-        isActivated: false,
         pendingEmail: newEmail,
         pendingEmailToken,
         pendingEmailExpires
@@ -72,7 +71,7 @@ export const changeEmailController = async (req: Request, res: Response) => {
     });
 
     try {
-      await sendActivationEmail(newEmail, pendingEmailToken, 'email');
+      await sendAuthorizedActivationEmail(newEmail, pendingEmailToken);
     } catch (error) {
       // Optionally clear pending fields, but do NOT delete user
       await prisma.user.update({
