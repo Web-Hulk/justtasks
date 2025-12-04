@@ -146,8 +146,61 @@ POST /2fa/verify — Verify 2FA code
 POST /2fa/disable — Disable 2FA
 
 Phase 6: Email & Account Verification
-POST /email/change — Request email change
-POST /email/verify — Verify new email
+
+Backend
+
+- POST /email/change — Request email change (authenticated user)
+    - Require authentication.
+    - Validate new email (format, uniqueness).
+    - Generate a verification token and expiration.
+    - Save pendingEmail (recommended), activationToken, and activationExpires to the user.
+    - Send a verification email to the new address with a link containing the token.
+    - (If you choose not to add pendingEmail, be aware of the risk of overwriting the current email before verification.)
+
+- POST /email/verify — Verify new email
+    - Accept the verification token (from email link).
+    - Find the user by token and check expiration.
+    - If valid, update the user’s email to pendingEmail (if used), clear the pending fields, and set isActivated: true.
+    - Invalidate all sessions (optional, for security).
+    - Respond with success or error.
+
+- Block email change until user verifies their account (recommended and standard).
+- Only allow email change for users with isActivated: true.
+- Prevent changing to an email already in use.
+
+- Rate limit email change requests.
+- Log all email change requests and verifications (audit logging).
+- Document both endpoints and their flows in Swagger/OpenAPI.
+
+Frontend
+
+- Add "Change Email" UI in user profile/settings.
+    - Validate email format before sending.
+    - On form submit, call POST /email/change.
+    - Show feedback: “Verification email sent to your new address.”
+
+- Handle verification link:
+    - Create a route/page for /email/verify?token=...
+    - On page load, call POST /email/verify with the token from the URL.
+    - Show success or error message based on backend response.
+
+- Show loading and error states for both requests.
+- Optionally, show the current email and pending email (if any).
+- Optionally, allow resending the verification email.
+- After successful verification, log the user out or refresh their session (if required by backend).
+- Show clear messages for expired/invalid tokens, already-used emails, etc.
+
+
+
+
+
+
+
+
+
+
+
+
 
 Phase 7: OAuth/Social Login (Optional, Advanced)
 GET /oauth/:provider — Start OAuth flow
@@ -177,90 +230,6 @@ Phase 9: Advanced RBAC Features
 
 What’s Missing or Worth Adding?
 
-/me → To fetch current user profile (useful for FE after login).
-/change-password → For logged-in users to update password.
 /resend-verification-code → In case user didn’t receive the email.
 /deactivate-account or /delete-account → GDPR compliance.
-/update-email → If users want to change their email.
 Rate limiting & IP tracking → Already partially covered with limiter, but consider per-user limits.
-Optional OAuth endpoints (Google, GitHub) → Even if not MVP, good for future.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1. User Info & Management
-GET /me — Get current authenticated user info (alias for /profile)
-PUT /me — Update current user info (name, email, password)
-DELETE /me — Delete own account
-
-2. RBAC (Role-Based Access Control)
-GET /roles — List available roles (admin only)
-PUT /users/:id/role — Change user role (admin only)
-GET /users — List all users (admin only)
-GET /users/:id — Get user by ID (admin only)
-DELETE /users/:id — Delete user by ID (admin only)
-
-3. Session Management
-GET /sessions — List active sessions for current user
-DELETE /sessions/:sessionId — Revoke session (logout from other devices)
-
-4. Security & Audit
-GET /audit-logs — List security/audit logs (admin only)
-POST /change-password — Change password (authenticated user)
-POST /2fa/setup — Setup two-factor authentication (optional, advanced)
-POST /2fa/verify — Verify 2FA code (optional, advanced)
-POST /2fa/disable — Disable 2FA (optional, advanced)
-
-5. Email & Account Verification
-POST /email/change — Request email change
-POST /email/verify — Verify new email
-
-6. OAuth/Social Login (optional, advanced)
-GET /oauth/:provider — Start OAuth flow
-GET /oauth/:provider/callback — Handle OAuth callback
-
-Other Features to Consider
-- Rate limiting on sensitive endpoints (already present).
-- JWT rotation and refresh token invalidation.
-- Account lockout after repeated failed logins.
-- Password strength validation (already present).
-- Email templates for all flows (activation, reset, change).
-- Comprehensive error handling and logging.
-- Swagger/OpenAPI documentation for all endpoints.
